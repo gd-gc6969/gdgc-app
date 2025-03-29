@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gdgc_app/screens/home_screen.dart';
 
-
 class AuthService {
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,6 +10,8 @@ class AuthService {
   AuthService(this._firebaseAuth);
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  User? get currentUser => _firebaseAuth.currentUser; // Getter for currentUser
 
   Future<void> signIn(String email, String password, BuildContext context) async {
     try {
@@ -20,7 +21,7 @@ class AuthService {
       );
 
       if (result.user != null) {
-        await _recordLoginEvent(result.user!.uid);
+        await _recordLoginEvent(result.user!.uid); // Ensure this method exists
 
         Navigator.pushReplacement(
           context,
@@ -44,6 +45,7 @@ class AuthService {
       if (result.user != null) {
         await _createUserDocument(result.user!);
         await _recordLoginEvent(result.user!.uid);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
